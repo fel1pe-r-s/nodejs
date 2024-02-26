@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { checkSessionIdExists } from "../middleware/check-session-id-exists";
 
 async function transactionsRoutes(app: FastifyInstance) {
-  app.addHook("preHandler", checkSessionIdExists);
+  /* app.addHook("preHandler", checkSessionIdExists); */
   app.get("/", { preHandler: [checkSessionIdExists] }, async (request) => {
     const { sessionId } = request.cookies;
     const transactions = await knex("transactions").where(
@@ -38,7 +38,8 @@ async function transactionsRoutes(app: FastifyInstance) {
       const { sessionId } = request.cookies;
       const summary = await knex("transactions")
         .where("session_id", sessionId)
-        .sum("amount", { as: "amount" });
+        .sum("amount", { as: "amount" })
+        .first();
 
       return { summary };
     }
